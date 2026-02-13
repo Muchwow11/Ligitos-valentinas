@@ -1,0 +1,395 @@
+html,
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  /* Svarbu iOS Safari – 100vh dažnai būna neteisingas dėl adreso juostos */
+  height: -webkit-fill-available; /* senesnis Safari hack */
+}
+
+.container {
+  height: 100dvh; /* modernus: dynamic viewport height */
+  /* arba alternatyva: height: 100%; + min-height: -webkit-fill-available; */
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ffb6d9, #ff69b4);
+  position: relative;
+  overflow: hidden;
+
+  /* Saugios zonos – svarbiausia dalis iPhone notch / Dynamic Island */
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  box-sizing: border-box;
+}
+
+/* =====================
+   KRINTANČIOS ŠIRDELĖS
+===================== */
+.falling-heart {
+  position: absolute;
+  top: -40px;
+  width: 20px;
+  height: 20px;
+  background-color: #ff2e93;
+  transform: rotate(-45deg);
+  animation: fall linear forwards;
+  z-index: 1;
+}
+
+.falling-heart::before,
+.falling-heart::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #ff2e93;
+  border-radius: 50%;
+}
+
+.falling-heart::before {
+  top: -50%;
+  left: 0;
+}
+
+.falling-heart::after {
+  left: 50%;
+  top: 0;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(-45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120vh) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
+/* =====================
+   PAGRINDINĖ ŠIRDIS
+===================== */
+.heart {
+  width: 150px;
+  height: 150px;
+  background-color: #ff2e2e;
+  position: relative;
+  transform: rotate(-45deg);
+  animation: pulse 1.5s infinite;
+  cursor: pointer;
+  z-index: 2;
+  display: flex; /* svarbu – kad tekstas būtų viduryje */
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+}
+/* Tekstas širdies viduje */
+.heart-text {
+  position: relative;
+  font-size: 38px; /* reguliuok pagal skonį: 32–42px */
+  font-family: 'Georgia', serif; /* romantiškesnis šriftas, arba palik Arial */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6), -1px -1px 3px rgba(0, 0, 0, 0.4);
+  transform: rotate(45deg); /* kompensuojame širdies rotate(-45deg) */
+  user-select: none; /* negalima pažymėti teksto */
+  pointer-events: none; /* kad paspaudimas eitų per tekstą ant širdies */
+  z-index: 100;
+}
+
+/* Pulsavimo efektas ir tekstui (kad atrodytų gyviau) */
+
+/* Jei nori, kad tekstas šiek tiek „kvėpuotų“ kartu su širdimi */
+.heart:hover .heart-text,
+.heart:active .heart-text {
+  animation: pulse-text 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-text {
+  0%,
+  100% {
+    transform: rotate(45deg) scale(1);
+  }
+  50% {
+    transform: rotate(45deg) scale(1.12);
+  }
+}
+
+.heart {
+  /* ... lieka tas pats ... */
+  margin-top: env(safe-area-inset-top, 20px); /* jei nori daugiau oro viršuje */
+}
+
+.heart::before,
+.heart::after {
+  content: '';
+  width: 150px;
+  height: 150px;
+  background-color: #ff2e2e;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.heart::before {
+  top: -75px;
+  left: 0;
+}
+
+.heart::after {
+  left: 75px;
+  top: 0;
+}
+
+@keyframes pulse {
+  0% {
+    transform: rotate(-45deg) scale(1);
+  }
+  50% {
+    transform: rotate(-45deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(-45deg) scale(1);
+  }
+}
+
+/* =====================
+   KORTELĖ
+===================== */
+.card {
+  text-align: center;
+  position: relative;
+  z-index: 3;
+}
+
+.title {
+  color: white;
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.yesButton {
+  padding: 15px 40px;
+  background: #ff1493;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+/* NO BUTTON – patobulinta versija */
+.noButton {
+  padding: 18px 50px;
+  background: #c71585;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  position: absolute;
+  transition: top 0.25s ease-out, left 0.25s ease-out, transform 0.2s ease,
+    box-shadow 0.3s ease, background 0.4s ease;
+  overflow: hidden;
+  z-index: 4;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  touch-action: manipulation;
+}
+
+/* Kai sprogs – labai stiprus efektas */
+.noButton[data-cracks='10'] {
+  opacity: 0;
+  transform: scale(0.4) rotate(180deg);
+  transition: all 0.6s ease-out;
+}
+
+.yesButton,
+.noButton {
+  padding: 18px 50px; /* šiek tiek didesni */
+  font-size: 20px;
+  min-width: 140px; /* kad nebūtų per siauri */
+  touch-action: manipulation; /* greitesnis reakcija ant mobile */
+  width: 180px;
+}
+
+/* =====================
+   SKILIMAS
+===================== */
+/* Skilimo linijos – daugiau ir gražesnės */
+.noButton.cracked::before,
+.noButton.cracked::after,
+.noButton.cracked .extra-crack {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.9);
+  transform-origin: top;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Pagrindinės skilimo linijos */
+.noButton.cracked::before {
+  width: 3px;
+  height: 130%;
+  top: -15%;
+  left: 38%;
+  transform: rotate(28deg);
+}
+.noButton.cracked::after {
+  width: 3px;
+  height: 120%;
+  top: -10%;
+  left: 62%;
+  transform: rotate(-32deg);
+}
+
+/* Papildomos skilimo linijos – atsiranda vėliau */
+.noButton.cracked .extra-crack1 {
+  width: 2.5px;
+  height: 90%;
+  top: 5%;
+  left: 22%;
+  transform: rotate(55deg);
+}
+.noButton.cracked .extra-crack2 {
+  width: 2px;
+  height: 110%;
+  top: -8%;
+  left: 78%;
+  transform: rotate(-48deg);
+}
+.noButton.cracked .extra-crack3 {
+  width: 2.8px;
+  height: 70%;
+  top: 35%;
+  left: 48%;
+  transform: rotate(8deg);
+}
+
+/* Skilimo intensyvumas pagal klikų kiekį */
+.noButton.cracked-1::before {
+  opacity: 0.6;
+}
+.noButton.cracked-2::before,
+.noButton.cracked-2::after {
+  opacity: 0.85;
+}
+.noButton.cracked-3 .extra-crack {
+  opacity: 0.4;
+}
+.noButton.cracked-4 .extra-crack {
+  opacity: 0.7;
+}
+.noButton.cracked-5 .extra-crack {
+  opacity: 1;
+}
+
+/* Kuo daugiau klikų – tuo labiau "sugadintas" mygtukas */
+.noButton[data-cracks='1'] {
+  transform: scale(1.02) rotate(1deg);
+  background: #b21378;
+}
+.noButton[data-cracks='2'] {
+  transform: scale(1.04) rotate(-1.5deg);
+  background: #a1126b;
+}
+.noButton[data-cracks='3'] {
+  transform: scale(1.06) rotate(2deg);
+  background: #90115e;
+}
+.noButton[data-cracks='4'] {
+  transform: scale(1.08) rotate(-2.5deg);
+  background: #7f1052;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+.noButton[data-cracks='5'] {
+  transform: scale(1.1) rotate(3deg);
+  background: #6e0f46;
+  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.5);
+}
+.noButton[data-cracks='6'] {
+  transform: scale(1.12) rotate(-3.5deg);
+  background: #5d0e3a;
+  filter: brightness(0.9);
+}
+.noButton[data-cracks='7'] {
+  transform: scale(1.14) rotate(4deg);
+  background: #4c0d2e;
+  filter: brightness(0.8);
+}
+.noButton[data-cracks='8'] {
+  transform: scale(1.16) rotate(-4.5deg);
+  background: #3b0c22;
+  filter: brightness(0.7);
+}
+.noButton[data-cracks='9'] {
+  transform: scale(1.18) rotate(5deg);
+  background: #2a0b16;
+  filter: brightness(0.6);
+}
+
+/* =====================
+   DALELĖS
+===================== */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  animation: fadeOut 0.6s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+/* =====================
+   NOTIFICATION
+===================== */
+.notification {
+  position: fixed;
+  top: calc(-150px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  color: #c71585;
+  padding: 18px 50px;
+  border-radius: 40px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  font-size: 18px;
+  font-weight: 600;
+  transition: top 0.5s cubic-bezier(0.17, 0.67, 0.3, 1.33);
+  z-index: 10;
+}
+.notification.show {
+  top: 40px;
+}
+
+.success {
+  text-align: center;
+  color: white;
+  padding: 0 20px;
+  padding-top: env(safe-area-inset-top, 40px);
+  padding-bottom: env(safe-area-inset-bottom, 40px);
+  box-sizing: border-box;
+}
+.catGif {
+  width: 220px;
+  border-radius: 20px;
+  margin-top: 20px;
+  max-width: 80vw; /* neleidžiame per didelio ant mažesnių ekranų */
+  height: auto;
+}
